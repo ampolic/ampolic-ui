@@ -6,6 +6,7 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch: # manual bootstrap — first-push events don't fire runs
 
 concurrency: release-${{ github.ref }}
 
