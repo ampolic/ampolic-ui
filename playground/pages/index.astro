@@ -12,8 +12,12 @@ import {
   Prose,
   SectionHeading,
   TestimonialCard,
+  PricingTiers,
+  TeamMemberCard,
+  WorkCard,
 } from '../../src/index';
 import FaqAnswer from '../components/FaqAnswer.astro';
+import placeholder from '../assets/placeholder.svg';
 ---
 
 <!doctype html>
@@ -54,6 +58,21 @@ import FaqAnswer from '../components/FaqAnswer.astro';
       </Prose>
 
       <p>Obfuscated email: <EmailLink email="hello@example.com" /></p>
+
+      <PricingTiers
+        ctaLabel="Get started"
+        ctaHref="#"
+        tiers={[
+          { name: 'Starter', price: '$29', regular: '$59', period: '/mo', blurb: 'For new businesses.', features: ['One page', 'Hosting included'] },
+          { name: 'Growth', price: '$79', period: '/mo', blurb: 'For growing teams.', features: ['Up to 10 pages', 'Ongoing SEO'], featured: true },
+          { name: 'Custom', price: '$199+', period: '/mo', features: ['Everything in Growth', 'Custom workflows'] },
+        ]}
+      />
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        <TeamMemberCard name="Jane Placeholder" role="Founder" bio="Short placeholder bio for the playground." photo={placeholder} linkLabel="Visit Website" linkHref="#" />
+        <WorkCard name="Example Project" body="Short placeholder project description." url="#" image={placeholder} />
+      </div>
 
       <CtaBand heading="Ready to start?" ctaLabel="Get a quote" ctaHref="#" />
     </main>
