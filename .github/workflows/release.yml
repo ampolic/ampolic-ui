@@ -1,0 +1,38 @@
+# Changesets release flow:
+#   push to main  -> changesets/action opens/updates the "Version Packages" PR
+#   merge that PR -> the same workflow run publishes to GitHub Packages
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency: release-${{ github.ref }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # version PR commits + git tags
+      pull-requests: write # open/update the version PR
+      packages: write # publish to GitHub Packages
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@ampolic'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm smoke
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

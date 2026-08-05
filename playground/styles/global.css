@@ -1,0 +1,19 @@
+/* Playground-only tokens — a minimal stand-in for a site's global.css.
+   Real sites define these in their own @theme block; components only ever
+   reference the token names. */
+@import 'tailwindcss';
+
+@theme {
+  --color-brand: oklch(0.55 0.15 190);
+  --color-surface: oklch(0.98 0.003 190);
+  --color-surface-alt: oklch(0.95 0.006 190);
+  --color-text: oklch(0.25 0.02 210);
+  --color-text-muted: oklch(0.45 0.02 210);
+  --color-line: oklch(0.88 0.01 190);
+  --radius-base: 0.5rem;
+  --shadow-card: 0 1px 3px oklch(0 0 0 / 0.1);
+  --spacing-section: 5rem;
+  --font-display: system-ui, sans-serif;
+  --font-sans: system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}

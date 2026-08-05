@@ -1,0 +1,61 @@
+---
+/* Component playground — `pnpm dev` and eyeball every exported component here.
+   Not published; exists so changes can be reviewed visually before a release. */
+import '../styles/global.css';
+import {
+  Button,
+  Callout,
+  Card,
+  CtaBand,
+  EmailLink,
+  FaqList,
+  Prose,
+  SectionHeading,
+  TestimonialCard,
+} from '../../src/index';
+import FaqAnswer from '../components/FaqAnswer.astro';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ampolic/ui playground</title>
+  </head>
+  <body class="bg-surface text-text font-sans">
+    <main class="mx-auto max-w-4xl space-y-16 px-4 py-16">
+      <SectionHeading eyebrow="Playground" heading="@ampolic/ui" lede="Every exported component, rendered with placeholder tokens." />
+
+      <section class="flex flex-wrap gap-4">
+        <Button>Solid</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button href="#" variant="inverse">Inverse link</Button>
+      </section>
+
+      <Card>
+        <p>A card with default padding and the shared surface treatment.</p>
+      </Card>
+
+      <Callout type="tip" title="Tip">Callouts render tip, note, and warning variants.</Callout>
+
+      <TestimonialCard author="Jane Placeholder" role="Owner, Example Co." quote="Great work, fast turnaround." rating={5} />
+
+      <FaqList
+        items={[
+          { question: 'What is this?', Content: FaqAnswer },
+        ]}
+      />
+
+      <Prose>
+        <h2>Prose block</h2>
+        <p>Long-form typography defaults for markdown content.</p>
+      </Prose>
+
+      <p>Obfuscated email: <EmailLink email="hello@example.com" /></p>
+
+      <CtaBand heading="Ready to start?" ctaLabel="Get a quote" ctaHref="#" />
+    </main>
+  </body>
+</html>

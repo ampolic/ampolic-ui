@@ -1,0 +1,5 @@
+# Copy the registry line into the consuming repo's .npmrc (committed) and put
+# the auth token in your user-level ~/.npmrc or CI env (NEVER committed).
+@ampolic:registry=https://npm.pkg.github.com
+# ~/.npmrc only — classic PAT with read:packages (write:packages to publish):
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
