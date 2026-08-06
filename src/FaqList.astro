@@ -1,11 +1,11 @@
 ---
 /* Card-style FAQ accordion, layout-shift-free without oversized boxes:
    - Native <details name> groups items so ONE is open at a time (no JS).
-   - The card reserves `all questions + the TALLEST answer` via an invisible
-     ghost sizer (all answers stacked in one grid cell) overlaid in the same
-     grid cell as the real list — so answers render at natural height, short
-     ones leave only the difference to the tallest as bottom whitespace, and
-     the card's outer height NEVER changes. No height:auto animation.
+   - An unstyled outer frame reserves `all questions + the TALLEST answer` via
+     an invisible ghost sizer (all answers stacked in one grid cell) overlaid
+     with the real list — answers render at natural height, the CARD hugs its
+     content, and the leftover reservation blends into the page background so
+     the layout below never moves. No height:auto animation.
    - Optional per-item icon (astro-icon name) in a brand-tinted circle.
    - Fully closable (the ghost keeps the height stable even with none open);
      defaultOpen (default: first item) sets the initial state. Zero JS. */
@@ -25,11 +25,14 @@ const answerPad = (icon: boolean) =>
   `pr-5 pb-5 sm:pr-6 ${icon ? 'pl-[4.75rem] sm:pl-20' : 'pl-5 sm:pl-6'}`;
 ---
 
-<div class="border-line bg-surface shadow-card grid overflow-hidden rounded-(--radius-base) border">
+{/* The outer grid (unstyled) carries the height reservation; the CARD skin
+    sits on the real list only, so it visually hugs the open content while the
+    reserved space blends into the section background. */}
+<div class="grid">
   {/* Ghost sizer: same question rows + every answer stacked in one cell.
-      Its height = questions + tallest answer = the card's constant height. */}
-  {/* divide-y mirrors the real list's row borders so heights match to the px. */}
-  <div class="invisible col-start-1 row-start-1 divide-y divide-transparent" aria-hidden="true" inert>
+      Its height = questions + tallest answer = the frame's constant height.
+      divide-y + transparent border mirror the card's borders to the px. */}
+  <div class="invisible col-start-1 row-start-1 divide-y divide-transparent border border-transparent" aria-hidden="true" inert>
     {items.map((f) => (
       <div class={rowClass}>
         {f.icon && <span class="size-10 shrink-0" />}
@@ -46,7 +49,7 @@ const answerPad = (icon: boolean) =>
     </div>
   </div>
 
-  <div class="faq divide-line col-start-1 row-start-1 divide-y self-start">
+  <div class="faq divide-line border-line bg-surface shadow-card col-start-1 row-start-1 divide-y self-start overflow-hidden rounded-(--radius-base) border">
     {items.map((f, i) => (
       <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
         <summary class={`${rowClass} cursor-pointer list-none transition-colors duration-150 hover:text-brand [&::-webkit-details-marker]:hidden`}>
