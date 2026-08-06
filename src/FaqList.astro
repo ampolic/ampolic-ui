@@ -1,13 +1,14 @@
 ---
-/* Accordion FAQ, layout-shift-free by design:
-   - Native <details name> groups items so ONE is open at a time (no JS; in
-     browsers without `name` support items open independently — still usable).
-   - The answer area has a RESERVED height (--faq-answer-height): short answers
-     leave whitespace, long ones scroll internally — the page below never moves.
-   - No height:auto animation; polish = chevron 200ms, answer fade 200ms,
-     row hover 150ms, all disabled under prefers-reduced-motion. */
+/* Card-style FAQ accordion, layout-shift-free:
+   - Native <details name> groups items so ONE is open at a time (no JS).
+   - Reserved answer height (--faq-answer-height): short answers leave
+     whitespace, long ones scroll internally — the page below never moves.
+   - Optional per-item icon (astro-icon name) in a brand-tinted circle; the
+     open item gets a soft brand tint. No height:auto animation; polish =
+     chevron 200ms, answer fade 200ms, hover 150ms, reduced-motion aware. */
+import { Icon } from 'astro-icon/components';
 interface Props {
-  items: Array<{ question: string; Content: any }>;
+  items: Array<{ question: string; Content: any; icon?: string }>;
   /** Accordion group name — must differ if two FaqLists share a page. */
   name?: string;
   /** Reserved answer height (any CSS length). Size to the largest answer. */
@@ -18,13 +19,21 @@ interface Props {
 const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.props;
 ---
 
-<div class="faq mx-auto max-w-2xl divide-y divide-line" style={`--faq-answer-height: ${answerHeight}`}>
+<div
+  class="faq divide-line border-line bg-surface shadow-card divide-y overflow-hidden rounded-(--radius-base) border"
+  style={`--faq-answer-height: ${answerHeight}`}
+>
   {items.map((f, i) => (
-    <details name={name} open={i === defaultOpen} class="group py-4">
-      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-(--radius-base) font-medium transition-colors duration-150 hover:text-brand [&::-webkit-details-marker]:hidden">
-        {f.question}
+    <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
+      <summary class="flex min-h-11 cursor-pointer list-none items-center gap-4 px-5 py-4 font-medium transition-colors duration-150 hover:text-brand sm:px-6 [&::-webkit-details-marker]:hidden">
+        {f.icon && (
+          <span class="bg-brand/10 text-brand flex size-10 shrink-0 items-center justify-center rounded-full" aria-hidden="true">
+            <Icon name={f.icon} class="size-5" />
+          </span>
+        )}
+        <span class="flex-1">{f.question}</span>
         <svg
-          class="faq-chevron size-4 shrink-0 text-brand"
+          class="faq-chevron size-4 shrink-0"
           viewBox="0 0 16 16"
           fill="none"
           stroke="currentColor"
@@ -35,7 +44,7 @@ const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.p
           <path d="M3 6l5 5 5-5" />
         </svg>
       </summary>
-      <div class="faq-answer mt-3 text-text-muted">
+      <div class:list={['faq-answer text-text-muted pr-5 pb-5 sm:pr-6', f.icon ? 'pl-[4.75rem] sm:pl-20' : 'pl-5 sm:pl-6']}>
         <f.Content />
       </div>
     </details>
