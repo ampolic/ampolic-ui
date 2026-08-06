@@ -1,27 +1,31 @@
 ---
-/* Card-style FAQ accordion, layout-shift-free:
+/* Card-style FAQ accordion, layout-shift-free without oversized boxes:
    - Native <details name> groups items so ONE is open at a time (no JS).
-   - Reserved answer height (--faq-answer-height): short answers leave
-     whitespace, long ones scroll internally — the page below never moves.
-   - Optional per-item icon (astro-icon name) in a brand-tinted circle; the
-     open item gets a soft brand tint. No height:auto animation; polish =
-     chevron 200ms, answer fade 200ms, hover 150ms, reduced-motion aware. */
+   - The card reserves `all questions + the TALLEST answer` via an invisible
+     ghost sizer (all answers stacked in one grid cell) overlaid in the same
+     grid cell as the real list — so answers render at natural height, short
+     ones leave only the difference to the tallest as bottom whitespace, and
+     the card's outer height NEVER changes. No height:auto animation.
+   - Optional per-item icon (astro-icon name) in a brand-tinted circle.
+   - Tiny optional script keeps one item open (closing re-opens the first). */
 import { Icon } from 'astro-icon/components';
 interface Props {
   items: Array<{ question: string; Content: any; icon?: string }>;
   /** Accordion group name — must differ if two FaqLists share a page. */
   name?: string;
-  /** Reserved answer height (any CSS length). Size to the largest answer. */
-  answerHeight?: string;
   /** Index opened on load (keeps total height constant from first paint); null = all closed. */
   defaultOpen?: number | null;
 }
-const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.props;
+const { items, name = 'faq', defaultOpen = 0 } = Astro.props;
+
+const rowClass =
+  'flex min-h-11 items-center gap-4 px-5 py-4 font-medium sm:px-6';
+const answerPad = (icon: boolean) =>
+  `pr-5 pb-5 sm:pr-6 ${icon ? 'pl-[4.75rem] sm:pl-20' : 'pl-5 sm:pl-6'}`;
 ---
 
 {/* Keep exactly one item open: closing the open item re-opens the first.
-    Progressive enhancement — without JS the accordion is simply closable.
-    Only active when an item is open by default (defaultOpen != null). */}
+    Progressive enhancement — without JS the accordion is simply closable. */}
 <script>
   document.querySelectorAll<HTMLElement>('[data-faq-keep-open]').forEach((group) => {
     // `toggle` doesn't bubble — listen in the capture phase on the container.
@@ -39,37 +43,55 @@ const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.p
   });
 </script>
 
-<div
-  class="faq divide-line border-line bg-surface shadow-card divide-y overflow-hidden rounded-(--radius-base) border"
-  style={`--faq-answer-height: ${answerHeight}`}
-  data-faq-keep-open={defaultOpen !== null ? '' : undefined}
->
-  {items.map((f, i) => (
-    <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
-      <summary class="flex min-h-11 cursor-pointer list-none items-center gap-4 px-5 py-4 font-medium transition-colors duration-150 hover:text-brand sm:px-6 [&::-webkit-details-marker]:hidden">
-        {f.icon && (
-          <span class="bg-brand/10 text-brand flex size-10 shrink-0 items-center justify-center rounded-full" aria-hidden="true">
-            <Icon name={f.icon} class="size-5" />
-          </span>
-        )}
+<div class="border-line bg-surface shadow-card grid overflow-hidden rounded-(--radius-base) border">
+  {/* Ghost sizer: same question rows + every answer stacked in one cell.
+      Its height = questions + tallest answer = the card's constant height. */}
+  {/* divide-y mirrors the real list's row borders so heights match to the px. */}
+  <div class="invisible col-start-1 row-start-1 divide-y divide-transparent" aria-hidden="true" inert>
+    {items.map((f) => (
+      <div class={rowClass}>
+        {f.icon && <span class="size-10 shrink-0" />}
         <span class="flex-1">{f.question}</span>
-        <svg
-          class="faq-chevron size-4 shrink-0"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <path d="M3 6l5 5 5-5" />
-        </svg>
-      </summary>
-      <div class:list={['faq-answer text-text-muted pr-5 pb-5 sm:pr-6', f.icon ? 'pl-[4.75rem] sm:pl-20' : 'pl-5 sm:pl-6']}>
-        <f.Content />
+        <span class="size-4 shrink-0" />
       </div>
-    </details>
-  ))}
+    ))}
+    <div class="grid">
+      {items.map((f) => (
+        <div class={`col-start-1 row-start-1 ${answerPad(!!f.icon)} faq-answer text-text-muted mt-0`}>
+          <f.Content />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="faq divide-line col-start-1 row-start-1 divide-y self-start" data-faq-keep-open={defaultOpen !== null ? '' : undefined}>
+    {items.map((f, i) => (
+      <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
+        <summary class={`${rowClass} cursor-pointer list-none transition-colors duration-150 hover:text-brand [&::-webkit-details-marker]:hidden`}>
+          {f.icon && (
+            <span class="bg-brand/10 text-brand flex size-10 shrink-0 items-center justify-center rounded-full" aria-hidden="true">
+              <Icon name={f.icon} class="size-5" />
+            </span>
+          )}
+          <span class="flex-1">{f.question}</span>
+          <svg
+            class="faq-chevron size-4 shrink-0"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M3 6l5 5 5-5" />
+          </svg>
+        </summary>
+        <div class={`faq-answer text-text-muted ${answerPad(!!f.icon)}`}>
+          <f.Content />
+        </div>
+      </details>
+    ))}
+  </div>
 </div>
 
 <style>
@@ -79,10 +101,10 @@ const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.p
   details[open] .faq-chevron {
     rotate: 180deg;
   }
-  /* Reserved space: every open answer occupies the same height; overflow
-     scrolls internally instead of growing the page. */
+  /* Safety valve only: an absurdly tall answer scrolls internally instead of
+     growing past the viewport. Normal answers render at natural height. */
   .faq-answer {
-    height: var(--faq-answer-height);
+    max-height: min(24rem, 70vh);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
