@@ -19,9 +19,30 @@ interface Props {
 const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.props;
 ---
 
+{/* Keep exactly one item open: closing the open item re-opens the first.
+    Progressive enhancement — without JS the accordion is simply closable.
+    Only active when an item is open by default (defaultOpen != null). */}
+<script>
+  document.querySelectorAll<HTMLElement>('[data-faq-keep-open]').forEach((group) => {
+    // `toggle` doesn't bubble — listen in the capture phase on the container.
+    group.addEventListener(
+      'toggle',
+      () => {
+        // Let the browser finish the paired close/open of <details name> first.
+        queueMicrotask(() => {
+          const all = [...group.querySelectorAll('details')];
+          if (!all.some((d) => d.open)) all[0] && (all[0].open = true);
+        });
+      },
+      true
+    );
+  });
+</script>
+
 <div
   class="faq divide-line border-line bg-surface shadow-card divide-y overflow-hidden rounded-(--radius-base) border"
   style={`--faq-answer-height: ${answerHeight}`}
+  data-faq-keep-open={defaultOpen !== null ? '' : undefined}
 >
   {items.map((f, i) => (
     <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
