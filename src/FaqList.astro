@@ -7,7 +7,8 @@
      ones leave only the difference to the tallest as bottom whitespace, and
      the card's outer height NEVER changes. No height:auto animation.
    - Optional per-item icon (astro-icon name) in a brand-tinted circle.
-   - Tiny optional script keeps one item open (closing re-opens the first). */
+   - Fully closable (the ghost keeps the height stable even with none open);
+     defaultOpen (default: first item) sets the initial state. Zero JS. */
 import { Icon } from 'astro-icon/components';
 interface Props {
   items: Array<{ question: string; Content: any; icon?: string }>;
@@ -23,25 +24,6 @@ const rowClass =
 const answerPad = (icon: boolean) =>
   `pr-5 pb-5 sm:pr-6 ${icon ? 'pl-[4.75rem] sm:pl-20' : 'pl-5 sm:pl-6'}`;
 ---
-
-{/* Keep exactly one item open: closing the open item re-opens the first.
-    Progressive enhancement — without JS the accordion is simply closable. */}
-<script>
-  document.querySelectorAll<HTMLElement>('[data-faq-keep-open]').forEach((group) => {
-    // `toggle` doesn't bubble — listen in the capture phase on the container.
-    group.addEventListener(
-      'toggle',
-      () => {
-        // Let the browser finish the paired close/open of <details name> first.
-        queueMicrotask(() => {
-          const all = [...group.querySelectorAll('details')];
-          if (!all.some((d) => d.open)) all[0] && (all[0].open = true);
-        });
-      },
-      true
-    );
-  });
-</script>
 
 <div class="border-line bg-surface shadow-card grid overflow-hidden rounded-(--radius-base) border">
   {/* Ghost sizer: same question rows + every answer stacked in one cell.
@@ -64,7 +46,7 @@ const answerPad = (icon: boolean) =>
     </div>
   </div>
 
-  <div class="faq divide-line col-start-1 row-start-1 divide-y self-start" data-faq-keep-open={defaultOpen !== null ? '' : undefined}>
+  <div class="faq divide-line col-start-1 row-start-1 divide-y self-start">
     {items.map((f, i) => (
       <details name={name} open={i === defaultOpen} class="group open:bg-brand/5 transition-colors duration-150">
         <summary class={`${rowClass} cursor-pointer list-none transition-colors duration-150 hover:text-brand [&::-webkit-details-marker]:hidden`}>
