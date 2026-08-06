@@ -1,5 +1,13 @@
 # @ampolic/ui
 
+## 0.4.0
+
+### Minor Changes
+
+- 0a737ef: FaqList card design: optional per-item `icon` (astro-icon name) in a
+  brand-tinted circle, bordered card container with dividers, soft brand tint on
+  the open item. Mechanics unchanged (single-open, reserved height).
+
 ## 0.3.0
 
 ### Minor Changes
