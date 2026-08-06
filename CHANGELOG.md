@@ -1,5 +1,13 @@
 # @ampolic/ui
 
+## 0.4.1
+
+### Patch Changes
+
+- 44ff2d2: FaqList keeps exactly one item open when `defaultOpen` is set: closing the open
+  item re-opens the first. Tiny progressive-enhancement script; no-JS behavior
+  unchanged.
+
 ## 0.4.0
 
 ### Minor Changes
