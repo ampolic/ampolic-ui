@@ -1,14 +1,75 @@
 ---
-interface Props { items: Array<{ question: string; Content: any }> }
-const { items } = Astro.props;
+/* Accordion FAQ, layout-shift-free by design:
+   - Native <details name> groups items so ONE is open at a time (no JS; in
+     browsers without `name` support items open independently — still usable).
+   - The answer area has a RESERVED height (--faq-answer-height): short answers
+     leave whitespace, long ones scroll internally — the page below never moves.
+   - No height:auto animation; polish = chevron 200ms, answer fade 200ms,
+     row hover 150ms, all disabled under prefers-reduced-motion. */
+interface Props {
+  items: Array<{ question: string; Content: any }>;
+  /** Accordion group name — must differ if two FaqLists share a page. */
+  name?: string;
+  /** Reserved answer height (any CSS length). Size to the largest answer. */
+  answerHeight?: string;
+  /** Index opened on load (keeps total height constant from first paint); null = all closed. */
+  defaultOpen?: number | null;
+}
+const { items, name = 'faq', answerHeight = '10rem', defaultOpen = 0 } = Astro.props;
 ---
-<div class="mx-auto max-w-2xl divide-y divide-line">
-  {items.map((f) => (
-    <details data-faq class="group py-4">
-      <summary class="flex cursor-pointer items-center justify-between font-medium">{f.question}<span class="text-brand transition group-open:rotate-45">+</span></summary>
-      <div class="mt-3 text-text-muted">
+
+<div class="faq mx-auto max-w-2xl divide-y divide-line" style={`--faq-answer-height: ${answerHeight}`}>
+  {items.map((f, i) => (
+    <details name={name} open={i === defaultOpen} class="group py-4">
+      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-(--radius-base) font-medium transition-colors duration-150 hover:text-brand [&::-webkit-details-marker]:hidden">
+        {f.question}
+        <svg
+          class="faq-chevron size-4 shrink-0 text-brand"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M3 6l5 5 5-5" />
+        </svg>
+      </summary>
+      <div class="faq-answer mt-3 text-text-muted">
         <f.Content />
       </div>
     </details>
   ))}
 </div>
+
+<style>
+  .faq-chevron {
+    transition: rotate 200ms ease;
+  }
+  details[open] .faq-chevron {
+    rotate: 180deg;
+  }
+  /* Reserved space: every open answer occupies the same height; overflow
+     scrolls internally instead of growing the page. */
+  .faq-answer {
+    height: var(--faq-answer-height);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  details[open] .faq-answer {
+    animation: faq-fade 200ms ease;
+  }
+  @keyframes faq-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-chevron {
+      transition: none;
+    }
+    details[open] .faq-answer {
+      animation: none;
+    }
+  }
+</style>
