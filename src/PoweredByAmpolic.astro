@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import logo from './assets/ampolic-mark.png';
+
 interface Props {
   /** Destination for the agency attribution. */
   href?: string;
@@ -23,12 +26,7 @@ const {
   class={`inline-flex min-h-8 items-center gap-1.5 rounded-full border border-line px-2 py-1 text-[0.6875rem] font-medium tracking-[0.01em] text-text-muted transition hover:border-[var(--color-ampolic)] hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ampolic)] ${className}`}
   aria-label={`Powered by ${name} (opens in a new tab)`}
 >
-  <svg viewBox="0 0 48 48" class="size-4 shrink-0" aria-hidden="true">
-    <path d="M7 24a17 17 0 0 1 32-7l2 19-13 8-9-14Z" class="fill-text-muted" opacity="0.7" />
-    <path d="M5 25a19 19 0 1 1 33 14l-7-12a10 10 0 1 0-18 4Z" class="fill-[var(--color-ampolic)]" />
-    <circle cx="24" cy="25" r="10" class="fill-surface" />
-    <circle cx="24" cy="25" r="4" class="fill-text" />
-  </svg>
+  <Image src={logo} alt="" width={16} height={16} class="size-4 shrink-0" />
   <span>Powered by</span>
   <span class="text-[var(--color-ampolic)]">{name}</span>
 </a>
