@@ -1,5 +1,12 @@
 # @ampolic/ui
 
+## 0.5.4
+
+### Patch Changes
+
+- bfa8d64: Use the official Ampolic PNG mark in PoweredByAmpolic instead of a recreated
+  SVG approximation.
+
 ## 0.5.3
 
 ### Patch Changes
