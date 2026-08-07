@@ -5,6 +5,7 @@
 
 @theme {
   --color-brand: oklch(0.55 0.15 190);
+  --color-ampolic: #ff9e62;
   --color-surface: oklch(0.98 0.003 190);
   --color-surface-alt: oklch(0.95 0.006 190);
   --color-text: oklch(0.25 0.02 210);

@@ -13,5 +13,6 @@ export { default as Prose } from './Prose.astro';
 export { default as SectionHeading } from './SectionHeading.astro';
 export { default as TestimonialCard } from './TestimonialCard.astro';
 export { default as PricingTiers } from './PricingTiers.astro';
+export { default as PoweredByAmpolic } from './PoweredByAmpolic.astro';
 export { default as TeamMemberCard } from './TeamMemberCard.astro';
 export { default as WorkCard } from './WorkCard.astro';
