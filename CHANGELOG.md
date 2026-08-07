@@ -1,5 +1,12 @@
 # @ampolic/ui
 
+## 0.5.3
+
+### Patch Changes
+
+- a20a874: Add PoweredByAmpolic, a compact, token-driven agency attribution badge with
+  the Ampolic mark for use in client-site footers.
+
 ## 0.5.2
 
 ### Patch Changes
