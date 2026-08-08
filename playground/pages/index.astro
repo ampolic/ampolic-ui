@@ -9,6 +9,9 @@ import {
   CtaBand,
   EmailLink,
   FaqList,
+  FormInput,
+  FormSelect,
+  FormTextarea,
   Prose,
   SectionHeading,
   TestimonialCard,
@@ -61,6 +64,14 @@ import placeholder from '../assets/placeholder.svg';
       </Prose>
 
       <p>Obfuscated email: <EmailLink email="hello@example.com" /></p>
+
+      <form class="grid max-w-xl gap-4">
+        <label class="grid gap-2 font-medium">Name <FormInput name="name" placeholder="Your name" /></label>
+        <label class="grid gap-2 font-medium">Topic <FormSelect name="topic"><option>Select an option</option><option>General enquiry</option></FormSelect></label>
+        <label class="grid gap-2 font-medium">Message <FormTextarea name="message" placeholder="Tell us how we can help." /></label>
+      </form>
+
+      <SectionHeading eyebrow="Display variant" heading="A larger heading with an optional accent rule" variant="display" rule />
 
       <PoweredByAmpolic />
 
