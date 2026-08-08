@@ -1,6 +1,6 @@
 {
   "name": "@ampolic/ui",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Shared Astro components for Ampolic client sites. Ships .astro source — no build step.",
   "type": "module",
   "license": "UNLICENSED",

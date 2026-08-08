@@ -1,5 +1,11 @@
 # @ampolic/ui
 
+## 0.6.0
+
+### Minor Changes
+
+- 7efb2db: Add token-driven form controls and display heading variants for reusable site sections.
+
 ## 0.5.4
 
 ### Patch Changes
