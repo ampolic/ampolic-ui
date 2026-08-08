@@ -1,0 +1,16 @@
+---
+interface Props {
+  name: string;
+  id?: string;
+  type?: 'email' | 'tel' | 'text' | 'url';
+  autocomplete?: string;
+  inputmode?: 'email' | 'tel' | 'text' | 'url';
+  placeholder?: string;
+  required?: boolean;
+  value?: string;
+  class?: string;
+}
+const { class: className, ...attrs } = Astro.props;
+const base = 'min-h-13 w-full rounded-(--radius-base) border border-line bg-surface px-4 shadow-card transition placeholder:text-text-muted/65 hover:border-brand/50 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10';
+---
+<input {...attrs} class:list={[base, className]} />

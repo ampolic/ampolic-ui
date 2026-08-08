@@ -1,9 +1,21 @@
 ---
-interface Props { eyebrow?: string; heading: string; lede?: string }
-const { eyebrow, heading, lede } = Astro.props;
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  lede?: string;
+  variant?: 'default' | 'display';
+  rule?: boolean;
+  align?: 'start' | 'center';
+}
+const { eyebrow, heading, lede, variant = 'default', rule = false, align = 'start' } = Astro.props;
+const styles = variant === 'display'
+  ? { wrap: 'max-w-3xl', heading: 'text-4xl sm:text-5xl' }
+  : { wrap: 'max-w-2xl', heading: 'text-3xl sm:text-4xl' };
+const alignment = align === 'center' ? 'mx-auto text-center' : '';
 ---
-<div class="max-w-2xl">
+<div class:list={[styles.wrap, alignment]}>
   {eyebrow && <p class="font-mono text-sm uppercase tracking-[0.18em] text-brand">{eyebrow}</p>}
-  <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{heading}</h2>
+  <h2 class:list={['mt-3 font-display font-semibold tracking-tight text-balance', styles.heading]}>{heading}</h2>
   {lede && <p class="mt-4 text-lg text-text-muted">{lede}</p>}
+  {rule && <span class="mt-7 block h-1 w-16 rounded-full bg-brand" aria-hidden="true"></span>}
 </div>

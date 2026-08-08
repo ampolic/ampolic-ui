@@ -1,0 +1,11 @@
+---
+interface Props {
+  name: string;
+  id?: string;
+  required?: boolean;
+  class?: string;
+}
+const { class: className, ...attrs } = Astro.props;
+const base = 'min-h-13 w-full rounded-(--radius-base) border border-line bg-surface px-4 shadow-card transition hover:border-brand/50 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10';
+---
+<select {...attrs} class:list={[base, className]}><slot /></select>
